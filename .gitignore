@@ -1,0 +1,22 @@
+# Binaries
+/bin/
+/build/
+**/*.exe
+**/*.out
+**/*.test
+
+# Go module cache
+/vendor/
+
+# IDE
+.idea/
+.vscode/
+.DS_Store
+
+# Coverage
+coverage.*
+*.coverprofile
+
+# OS
+Thumbs.db
+
