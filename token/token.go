@@ -43,6 +43,8 @@ const (
 	RETURN   = "RETURN"
 )
 
+// Token represents a single lexical token produced by the lexer.
+// Type captures the token category, Literal is the exact source substring.
 type Token struct {
 	Type    TokenType
 	Literal string
