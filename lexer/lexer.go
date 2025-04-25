@@ -9,15 +9,15 @@ type Lexer struct {
 	ch           byte   // current char under examination
 }
 
-// New constructs a new Lexer for the given input string.
+// New constructs a new Lexer for the given input string
 func New(input string) *Lexer {
 	l := &Lexer{input: input}
 	l.readChar()
 	return l
 }
 
-// NextToken returns the next token from the input stream.
-// It advances the lexer as needed and skips whitespace.
+// NextToken returns the next token from the input stream
+// It advances the lexer as needed and skips whitespace
 func (l *Lexer) NextToken() token.Token {
 	var tok token.Token
 
@@ -87,14 +87,14 @@ func (l *Lexer) NextToken() token.Token {
 	return tok
 }
 
-// skipWhitespace advances the input past spaces, tabs, newlines, and carriage returns.
+// skipWhitespace advances the input past spaces, tabs, newlines, and carriage returns
 func (l *Lexer) skipWhitespace() {
 	for l.ch == ' ' || l.ch == '\t' || l.ch == '\n' || l.ch == '\r' {
 		l.readChar()
 	}
 }
 
-// readChar reads the next character, advancing position and readPosition.
+// readChar reads the next character, advancing position and readPosition
 func (l *Lexer) readChar() {
 	if l.readPosition >= len(l.input) {
 		l.ch = 0
@@ -105,7 +105,7 @@ func (l *Lexer) readChar() {
 	l.readPosition += 1
 }
 
-// peekChar returns the next byte without advancing the lexer.
+// peekChar returns the next byte without advancing the lexer
 func (l *Lexer) peekChar() byte {
 	if l.readPosition >= len(l.input) {
 		return 0
@@ -114,7 +114,7 @@ func (l *Lexer) peekChar() byte {
 	}
 }
 
-// readIdentifier consumes an identifier [a-zA-Z_][a-zA-Z0-9_]* and returns its literal.
+// readIdentifier consumes an identifier [a-zA-Z_][a-zA-Z0-9_]* and returns its literal
 func (l *Lexer) readIdentifier() string {
 	position := l.position
 	for isLetter(l.ch) {
@@ -123,7 +123,7 @@ func (l *Lexer) readIdentifier() string {
 	return l.input[position:l.position]
 }
 
-// readNumber consumes a contiguous sequence of digits and returns its literal.
+// readNumber consumes a contiguous sequence of digits and returns its literal
 func (l *Lexer) readNumber() string {
 	position := l.position
 	for isDigit(l.ch) {
@@ -132,17 +132,17 @@ func (l *Lexer) readNumber() string {
 	return l.input[position:l.position]
 }
 
-// isLetter reports whether ch is a letter or underscore.
+// isLetter reports whether ch is a letter or underscore
 func isLetter(ch byte) bool {
 	return 'a' <= ch && ch <= 'z' || 'A' <= ch && ch <= 'Z' || ch == '_'
 }
 
-// isDigit reports whether ch is an ASCII digit.
+// isDigit reports whether ch is an ASCII digit
 func isDigit(ch byte) bool {
 	return '0' <= ch && ch <= '9'
 }
 
-// newToken constructs a token from a single-character literal.
+// newToken constructs a token from a single-character literal
 func newToken(tokenType token.TokenType, ch byte) token.Token {
 	return token.Token{Type: tokenType, Literal: string(ch)}
 }
