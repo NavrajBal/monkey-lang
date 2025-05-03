@@ -5,29 +5,60 @@ import (
 	"fmt"
 	"io"
 
+	"monkey-lang/evaluator"
 	"monkey-lang/lexer"
-	"monkey-lang/token"
+	"monkey-lang/object"
+	"monkey-lang/parser"
 )
 
 const PROMPT = ">> "
 
-// Start launches a simple token-printing REPL over the provided streams.
+// Start runs a simple REPL that evaluates each input line
 func Start(in io.Reader, out io.Writer) {
 	scanner := bufio.NewScanner(in)
+	env := object.NewEnvironment()
 
 	for {
 		fmt.Fprint(out, PROMPT)
-		if !scanner.Scan() {
-			return
-		}
+		if !scanner.Scan() { return }
 
 		line := scanner.Text()
 		l := lexer.New(line)
+		p := parser.New(l)
 
-		// Tokenize the line and print each token until EOF.
-		for tok := l.NextToken(); tok.Type != token.EOF; tok = l.NextToken() {
-			fmt.Fprintf(out, "%+v\n", tok)
+		program := p.ParseProgram()
+		if len(p.Errors()) != 0 {
+			printParserErrors(out, p.Errors())
+			continue
 		}
+
+		evaluated := evaluator.Eval(program, env)
+		if evaluated != nil {
+			io.WriteString(out, evaluated.Inspect())
+			io.WriteString(out, "\n")
+		}
+	}
+}
+
+const MONKEY_FACE = `            __,__
+   .--.  .-"     "-.  .--.
+  / .. \/  .-. .-.  \/ .. \
+ | |  '|  /   Y   \  |'  | |
+ | \   \  \ 0 | 0 /  /   / |
+  \ '- ,\.-"""""""-./, -' /
+   ''-' /_   ^ ^   _\ '-''
+       |  \._   _./  |
+       \   \ '~' /   /
+        '._ '-=-' _.'
+           '-----'
+`
+
+func printParserErrors(out io.Writer, errors []string) {
+	io.WriteString(out, MONKEY_FACE)
+	io.WriteString(out, "Woops! We ran into some monkey business here!\n")
+	io.WriteString(out, " parser errors:\n")
+	for _, msg := range errors {
+		io.WriteString(out, "\t"+msg+"\n")
 	}
 }
 
