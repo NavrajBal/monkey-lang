@@ -56,6 +56,8 @@ func (l *Lexer) NextToken() token.Token {
 		tok = newToken(token.GT, l.ch)
 	case ';':
 		tok = newToken(token.SEMICOLON, l.ch)
+	case ':':
+		tok = newToken(token.COLON, l.ch)
 	case ',':
 		tok = newToken(token.COMMA, l.ch)
 	case '{':
@@ -66,6 +68,13 @@ func (l *Lexer) NextToken() token.Token {
 		tok = newToken(token.LPAREN, l.ch)
 	case ')':
 		tok = newToken(token.RPAREN, l.ch)
+	case '[':
+		tok = newToken(token.LBRACKET, l.ch)
+	case ']':
+		tok = newToken(token.RBRACKET, l.ch)
+	case '"':
+		tok.Type = token.STRING
+		tok.Literal = l.readString()
 	case 0:
 		tok.Literal = ""
 		tok.Type = token.EOF
@@ -107,42 +116,39 @@ func (l *Lexer) readChar() {
 
 // peekChar returns the next byte without advancing the lexer
 func (l *Lexer) peekChar() byte {
-	if l.readPosition >= len(l.input) {
-		return 0
-	} else {
-		return l.input[l.readPosition]
-	}
+	if l.readPosition >= len(l.input) { return 0 }
+	return l.input[l.readPosition]
 }
 
 // readIdentifier consumes an identifier [a-zA-Z_][a-zA-Z0-9_]* and returns its literal
 func (l *Lexer) readIdentifier() string {
 	position := l.position
-	for isLetter(l.ch) {
-		l.readChar()
-	}
+	for isLetter(l.ch) { l.readChar() }
 	return l.input[position:l.position]
 }
 
 // readNumber consumes a contiguous sequence of digits and returns its literal
 func (l *Lexer) readNumber() string {
 	position := l.position
-	for isDigit(l.ch) {
+	for isDigit(l.ch) { l.readChar() }
+	return l.input[position:l.position]
+}
+
+// readString reads until the closing double quote or EOF and returns the substring
+func (l *Lexer) readString() string {
+	position := l.position + 1
+	for {
 		l.readChar()
+		if l.ch == '"' || l.ch == 0 { break }
 	}
 	return l.input[position:l.position]
 }
 
 // isLetter reports whether ch is a letter or underscore
-func isLetter(ch byte) bool {
-	return 'a' <= ch && ch <= 'z' || 'A' <= ch && ch <= 'Z' || ch == '_'
-}
+func isLetter(ch byte) bool { return 'a' <= ch && ch <= 'z' || 'A' <= ch && ch <= 'Z' || ch == '_' }
 
 // isDigit reports whether ch is an ASCII digit
-func isDigit(ch byte) bool {
-	return '0' <= ch && ch <= '9'
-}
+func isDigit(ch byte) bool { return '0' <= ch && ch <= '9' }
 
 // newToken constructs a token from a single-character literal
-func newToken(tokenType token.TokenType, ch byte) token.Token {
-	return token.Token{Type: tokenType, Literal: string(ch)}
-}
+func newToken(tokenType token.TokenType, ch byte) token.Token { return token.Token{Type: tokenType, Literal: string(ch)} }
