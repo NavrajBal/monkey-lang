@@ -5,6 +5,7 @@ import (
 	"monkey-lang/ast"
 	"monkey-lang/code"
 	"monkey-lang/object"
+	"sort"
 )
 
 type Compiler struct {
@@ -85,6 +86,25 @@ func (c *Compiler) Compile(node ast.Node) error {
 		symbol, ok := c.symbolTable.Resolve(node.Value)
 		if !ok { return fmt.Errorf("undefined variable %s", node.Value) }
 		c.emit(code.OpGetGlobal, symbol.Index)
+	case *ast.StringLiteral:
+		str := &object.String{Value: node.Value}
+		c.emit(code.OpConstant, c.addConstant(str))
+	case *ast.ArrayLiteral:
+		for _, el := range node.Elements { if err := c.Compile(el); err != nil { return err } }
+		c.emit(code.OpArray, len(node.Elements))
+	case *ast.HashLiteral:
+		keys := []ast.Expression{}
+		for k := range node.Pairs { keys = append(keys, k) }
+		sort.Slice(keys, func(i, j int) bool { return keys[i].String() < keys[j].String() })
+		for _, k := range keys {
+			if err := c.Compile(k); err != nil { return err }
+			if err := c.Compile(node.Pairs[k]); err != nil { return err }
+		}
+		c.emit(code.OpHash, len(node.Pairs)*2)
+	case *ast.IndexExpression:
+		if err := c.Compile(node.Left); err != nil { return err }
+		if err := c.Compile(node.Index); err != nil { return err }
+		c.emit(code.OpIndex)
 	}
 	return nil
 }
