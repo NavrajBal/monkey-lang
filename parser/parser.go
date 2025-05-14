@@ -145,18 +145,14 @@ func (p *Parser) parseStatement() ast.Statement {
 
 func (p *Parser) parseLetStatement() *ast.LetStatement {
 	stmt := &ast.LetStatement{Token: p.curToken}
-	if !p.expectPeek(token.IDENT) {
-		return nil
-	}
+	if !p.expectPeek(token.IDENT) { return nil }
 	stmt.Name = &ast.Identifier{Token: p.curToken, Value: p.curToken.Literal}
-	if !p.expectPeek(token.ASSIGN) {
-		return nil
-	}
+	if !p.expectPeek(token.ASSIGN) { return nil }
 	p.nextToken()
 	stmt.Value = p.parseExpression(LOWEST)
-	if p.peekTokenIs(token.SEMICOLON) {
-		p.nextToken()
-	}
+	// name functions to allow recursion in compiler
+	if fn, ok := stmt.Value.(*ast.FunctionLiteral); ok { fn.Name = stmt.Name.Value }
+	if p.peekTokenIs(token.SEMICOLON) { p.nextToken() }
 	return stmt
 }
 

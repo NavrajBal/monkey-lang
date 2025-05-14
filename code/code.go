@@ -57,6 +57,15 @@ const (
     OpArray
     OpHash
     OpIndex
+    OpCall
+    OpReturnValue
+    OpReturn
+    OpGetLocal
+    OpSetLocal
+    OpGetBuiltin
+    OpClosure
+    OpGetFree
+    OpCurrentClosure
 )
 
 type Definition struct {
@@ -86,6 +95,15 @@ var definitions = map[Opcode]*Definition{
     OpArray:      {"OpArray", []int{2}},
     OpHash:       {"OpHash", []int{2}},
     OpIndex:      {"OpIndex", []int{}},
+    OpCall:       {"OpCall", []int{1}},
+    OpReturnValue: {"OpReturnValue", []int{}},
+    OpReturn:     {"OpReturn", []int{}},
+    OpGetLocal:   {"OpGetLocal", []int{1}},
+    OpSetLocal:   {"OpSetLocal", []int{1}},
+    OpGetBuiltin: {"OpGetBuiltin", []int{1}},
+    OpClosure:    {"OpClosure", []int{2, 1}},
+    OpGetFree:    {"OpGetFree", []int{1}},
+    OpCurrentClosure: {"OpCurrentClosure", []int{}},
 }
 
 func Lookup(op byte) (*Definition, error) {

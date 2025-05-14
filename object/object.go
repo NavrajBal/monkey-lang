@@ -5,8 +5,11 @@ import (
 	"fmt"
 	"hash/fnv"
 	"monkey-lang/ast"
+	"monkey-lang/code"
 	"strings"
 )
+
+// runtime object system kept concise
 
 type ObjectType string
 
@@ -25,6 +28,9 @@ const (
 
 	ARRAY_OBJ = "ARRAY"
 	HASH_OBJ  = "HASH"
+
+	COMPILED_FUNCTION_OBJ = "COMPILED_FUNCTION_OBJ"
+	CLOSURE_OBJ           = "CLOSURE"
 )
 
 type HashKey struct {
@@ -32,9 +38,7 @@ type HashKey struct {
 	Value uint64
 }
 
-type Hashable interface {
-	HashKey() HashKey
-}
+type Hashable interface { HashKey() HashKey }
 
 type Object interface {
 	Type() ObjectType
@@ -51,11 +55,7 @@ type Boolean struct { Value bool }
 
 func (b *Boolean) Type() ObjectType { return BOOLEAN_OBJ }
 func (b *Boolean) Inspect() string  { return fmt.Sprintf("%t", b.Value) }
-func (b *Boolean) HashKey() HashKey {
-	var v uint64
-	if b.Value { v = 1 } else { v = 0 }
-	return HashKey{Type: b.Type(), Value: v}
-}
+func (b *Boolean) HashKey() HashKey { var v uint64; if b.Value { v = 1 } else { v = 0 }; return HashKey{Type: b.Type(), Value: v} }
 
 type Null struct{}
 
@@ -118,10 +118,7 @@ func (ao *Array) Inspect() string {
 	return out.String()
 }
 
-type HashPair struct {
-	Key   Object
-	Value Object
-}
+type HashPair struct { Key Object; Value Object }
 
 type Hash struct { Pairs map[HashKey]HashPair }
 
@@ -135,5 +132,24 @@ func (h *Hash) Inspect() string {
 	out.WriteString("}")
 	return out.String()
 }
+
+// compiled function + closure for VM
+
+type CompiledFunction struct {
+	Instructions  code.Instructions
+	NumLocals     int
+	NumParameters int
+}
+
+func (cf *CompiledFunction) Type() ObjectType { return COMPILED_FUNCTION_OBJ }
+func (cf *CompiledFunction) Inspect() string  { return fmt.Sprintf("CompiledFunction[%p]", cf) }
+
+type Closure struct {
+	Fn   *CompiledFunction
+	Free []Object
+}
+
+func (c *Closure) Type() ObjectType { return CLOSURE_OBJ }
+func (c *Closure) Inspect() string  { return fmt.Sprintf("Closure[%p]", c) }
 
 
