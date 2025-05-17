@@ -25,6 +25,12 @@ func New() *Compiler {
 	return c
 }
 
+func NewWithState(table *SymbolTable, constants []object.Object) *Compiler {
+	mainScope := CompilationScope{instructions: code.Instructions{}}
+	c := &Compiler{constants: constants, scopes: []CompilationScope{mainScope}, scopeIndex: 0, symbolTable: table}
+	return c
+}
+
 func (c *Compiler) Compile(node ast.Node) error {
 	switch node := node.(type) {
 	case *ast.Program:
