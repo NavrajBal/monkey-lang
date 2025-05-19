@@ -47,7 +47,12 @@ func (l *Lexer) NextToken() token.Token {
 			tok = newToken(token.BANG, l.ch)
 		}
 	case '/':
-		tok = newToken(token.SLASH, l.ch)
+		if l.peekChar() == '/' {
+			l.skipComment()
+			return l.NextToken()
+		} else {
+			tok = newToken(token.SLASH, l.ch)
+		}
 	case '*':
 		tok = newToken(token.ASTERISK, l.ch)
 	case '<':
@@ -99,6 +104,13 @@ func (l *Lexer) NextToken() token.Token {
 // skipWhitespace advances the input past spaces, tabs, newlines, and carriage returns
 func (l *Lexer) skipWhitespace() {
 	for l.ch == ' ' || l.ch == '\t' || l.ch == '\n' || l.ch == '\r' {
+		l.readChar()
+	}
+}
+
+// skipComment advances the input past a line comment (from // to end of line)
+func (l *Lexer) skipComment() {
+	for l.ch != '\n' && l.ch != 0 {
 		l.readChar()
 	}
 }

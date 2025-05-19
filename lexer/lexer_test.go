@@ -83,3 +83,77 @@ func TestNextToken_KeywordsAndIdentifiers(t *testing.T) {
 	}
 }
 
+func TestNextToken_Comments(t *testing.T) {
+	input := `
+	// This is a comment
+	let five = 5; // Another comment
+	// Full line comment
+	let ten = 10;
+	// Final comment`
+
+	l := New(input)
+
+	tests := []struct {
+		expectedType    token.TokenType
+		expectedLiteral string
+	}{
+		{token.LET, "let"},
+		{token.IDENT, "five"},
+		{token.ASSIGN, "="},
+		{token.INT, "5"},
+		{token.SEMICOLON, ";"},
+		{token.LET, "let"},
+		{token.IDENT, "ten"},
+		{token.ASSIGN, "="},
+		{token.INT, "10"},
+		{token.SEMICOLON, ";"},
+		{token.EOF, ""},
+	}
+
+	for i, tt := range tests {
+		tok := l.NextToken()
+		if tok.Type != tt.expectedType {
+			t.Fatalf("tests[%d] - tokentype wrong. expected=%q, got=%q", i, tt.expectedType, tok.Type)
+		}
+		if tok.Literal != tt.expectedLiteral {
+			t.Fatalf("tests[%d] - literal wrong. expected=%q, got=%q", i, tt.expectedLiteral, tok.Literal)
+		}
+	}
+}
+
+func TestNextToken_CommentsWithDivision(t *testing.T) {
+	input := `
+	5 / 2 // Division followed by comment
+	// Comment line
+	let x = 10 / 5;`
+
+	l := New(input)
+
+	tests := []struct {
+		expectedType    token.TokenType
+		expectedLiteral string
+	}{
+		{token.INT, "5"},
+		{token.SLASH, "/"},
+		{token.INT, "2"},
+		{token.LET, "let"},
+		{token.IDENT, "x"},
+		{token.ASSIGN, "="},
+		{token.INT, "10"},
+		{token.SLASH, "/"},
+		{token.INT, "5"},
+		{token.SEMICOLON, ";"},
+		{token.EOF, ""},
+	}
+
+	for i, tt := range tests {
+		tok := l.NextToken()
+		if tok.Type != tt.expectedType {
+			t.Fatalf("tests[%d] - tokentype wrong. expected=%q, got=%q", i, tt.expectedType, tok.Type)
+		}
+		if tok.Literal != tt.expectedLiteral {
+			t.Fatalf("tests[%d] - literal wrong. expected=%q, got=%q", i, tt.expectedLiteral, tok.Literal)
+		}
+	}
+}
+

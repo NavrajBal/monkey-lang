@@ -45,6 +45,9 @@ const (
 	IF       = "IF"
 	ELSE     = "ELSE"
 	RETURN   = "RETURN"
+
+	// Comments
+	COMMENT = "COMMENT"
 )
 
 // Token represents a single lexical token produced by the lexer
