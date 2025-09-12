@@ -5,11 +5,11 @@ import (
 	"fmt"
 	"io"
 
-	"monkey-lang/compiler"
-	"monkey-lang/lexer"
-	"monkey-lang/object"
-	"monkey-lang/parser"
-	"monkey-lang/vm"
+	"github.com/NavrajBal/monkey-lang/compiler"
+	"github.com/NavrajBal/monkey-lang/lexer"
+	"github.com/NavrajBal/monkey-lang/object"
+	"github.com/NavrajBal/monkey-lang/parser"
+	"github.com/NavrajBal/monkey-lang/vm"
 )
 
 const PROMPT = ">> "

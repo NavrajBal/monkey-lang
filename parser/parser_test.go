@@ -2,8 +2,8 @@ package parser
 
 import (
 	"fmt"
-	"monkey-lang/ast"
-	"monkey-lang/lexer"
+	"github.com/NavrajBal/monkey-lang/ast"
+	"github.com/NavrajBal/monkey-lang/lexer"
 	"testing"
 )
 

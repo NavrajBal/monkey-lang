@@ -2,9 +2,9 @@ package vm
 
 import (
 	"fmt"
-	"monkey-lang/code"
-	"monkey-lang/compiler"
-	"monkey-lang/object"
+	"github.com/NavrajBal/monkey-lang/code"
+	"github.com/NavrajBal/monkey-lang/compiler"
+	"github.com/NavrajBal/monkey-lang/object"
 )
 
 const StackSize = 2048

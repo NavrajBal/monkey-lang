@@ -2,9 +2,9 @@ package compiler
 
 import (
 	"fmt"
-	"monkey-lang/ast"
-	"monkey-lang/code"
-	"monkey-lang/object"
+	"github.com/NavrajBal/monkey-lang/ast"
+	"github.com/NavrajBal/monkey-lang/code"
+	"github.com/NavrajBal/monkey-lang/object"
 	"sort"
 )
 

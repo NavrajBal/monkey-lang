@@ -2,7 +2,7 @@ package evaluator
 
 import (
 	"fmt"
-	"monkey-lang/object"
+	"github.com/NavrajBal/monkey-lang/object"
 )
 
 var builtins = map[string]*object.Builtin{

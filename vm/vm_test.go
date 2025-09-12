@@ -1,11 +1,11 @@
 package vm
 
 import (
-	"monkey-lang/ast"
-	"monkey-lang/compiler"
-	"monkey-lang/lexer"
-	"monkey-lang/object"
-	"monkey-lang/parser"
+	"github.com/NavrajBal/monkey-lang/ast"
+	"github.com/NavrajBal/monkey-lang/compiler"
+	"github.com/NavrajBal/monkey-lang/lexer"
+	"github.com/NavrajBal/monkey-lang/object"
+	"github.com/NavrajBal/monkey-lang/parser"
 	"testing"
 )
 

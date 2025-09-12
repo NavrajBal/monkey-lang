@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"monkey-lang/repl"
+	"github.com/NavrajBal/monkey-lang/repl"
 )
 
 // main starts a simple REPL that prints tokens for each input line

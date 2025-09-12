@@ -3,7 +3,7 @@ package lexer
 import (
 	"testing"
 
-	"monkey-lang/token"
+	"github.com/NavrajBal/monkey-lang/token"
 )
 
 // TestNextToken_Reference mirrors the Chapter 1 solution test

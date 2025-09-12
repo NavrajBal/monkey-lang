@@ -2,7 +2,7 @@ package lexer
 
 import (
 	"testing"
-	"monkey-lang/token"
+	"github.com/NavrajBal/monkey-lang/token"
 )
 
 func TestNextToken_SimpleSequence(t *testing.T) {
